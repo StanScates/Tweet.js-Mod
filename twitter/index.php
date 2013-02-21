@@ -18,6 +18,8 @@ https://github.com/themattharris/tmhOAuth
 
 */
 
+if(empty($_GET)) { die(); }
+
 class ezTweet {
 	/*************************************** config ***************************************/
 
