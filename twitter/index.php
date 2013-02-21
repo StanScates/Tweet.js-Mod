@@ -33,14 +33,14 @@ class ezTweet {
 	// Your Twitter App Access Token Secret
 	private $user_secret     = 'YOUR_ACCESS_TOKEN_SECRET';
 
-	// Path to tmhOAuth libraries
-	private $lib             = './lib/';
+    // Path to tmhOAuth libraries
+    private $lib             = './lib/';
 
-	// Enable caching
+    // Enable caching
     private $cache_enabled   = true;
-    
+
     // Cache interval (minutes)
-	private $cache_interval  = 15;
+    private $cache_interval  = 15;
 
 	// Path to writable cache directory
 	private $cache_dir       = './';
@@ -147,8 +147,8 @@ class ezTweet {
 		    'consumer_key'    		=> $this->consumer_key,
 		    'consumer_secret' 		=> $this->consumer_secret,
 		    'user_token'      		=> $this->user_token,
-		    'user_secret'     		=> $this->user_secret,
-			'curl_ssl_verifypeer'   => false
+            'user_secret'     		=> $this->user_secret,
+            'curl_ssl_verifypeer'   => false
 		));
 
 		$tmhOAuth->request('GET', $tmhOAuth->url(urldecode($_GET['url'])));
