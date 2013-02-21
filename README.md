@@ -19,7 +19,6 @@ This mod works as an intermediary between [seaofclouds / tweet](https://github.c
 1. Acquire /twitter/. How you wish to structure the files is up to you, but by default it is designed to be placed in the docroot of your website as a whole. (IE, domain.com/twitter).
 
 2. Replace your existing JS reference to jquery.tweet.js to the modified one provided.
-
 ```<script type="text/javascript" charset="utf-8" src="/twitter/jquery.tweet.js"></script>```
 
 3. You need to have a twitter App for your usage in order to obtain OAuth credentials, see https://dev.twitter.com/apps for help.
