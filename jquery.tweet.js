@@ -1,3 +1,6 @@
+// jquery.tweet.js - See http://tweet.seaofclouds.com/ or https://github.com/seaofclouds/tweet for more info
+// Copyright (c) 2008-2012 Todd Matthews & Steve Purcell
+// Modified by Stan Scates for https://github.com/StanScates/Tweet.js-Mod
 (function (factory) {
   if (typeof define === 'function' && define.amd)
     define(['jquery'], factory); // AMD support for RequireJS etc.
@@ -6,7 +9,8 @@
 }(function ($) {
   $.fn.tweet = function(o){
     var s = $.extend({
-      username: null,                           // [string or array] required unless using the 'query' option; one or more twitter screen names (use 'list' option for multiple names, where possible)
+      modpath: "/twitter/",                     // [string] relative URL to StanScates' Tweet.js mod (see https://github.com/StanScates/Tweet.js-Mod)
+      username: "",                             // [string or array] required unless using the 'query' option; one or more twitter screen names (use 'list' option for multiple names, where possible)
       list: null,                               // [string]   optional name of list belonging to username
       favorites: false,                         // [boolean]  display the user's favorites instead of his tweets
       query: null,                              // [string]   optional search query (see also: http://search.twitter.com/operators)
@@ -140,12 +144,18 @@
     }
 
     function build_api_url() {
-      var proto = ('https:' == document.location.protocol ? 'https:' : 'http:');
-      var count = (s.fetch === null) ? s.count : s.fetch;
-      var common_params = '&include_entities=1&callback=?';
-        // TODO: Add support for lists, everything else I deleted from this function...
-        return "/twitter/?url="+encodeURIComponent("/1.1/statuses/user_timeline")+"&screen_name="+s.username[0]+"&count="+count;
-      }
+      var modpath = s.modpath,
+          count = (s.fetch === null) ? s.count : s.fetch,
+          common_params = '&include_entities=1';
+      if (s.list) {
+        return modpath+"?url=/1.1/lists/list.json?screen_name="+s.username[0]+common_params;
+      } else if (s.favorites) {
+        return modpath+"?url=/1.1/favorites/list.json&screen_name="+s.username[0]+"&page="+s.page+"&count="+count+common_params;
+      } else {
+        return modpath+"?url=/1.1/statuses/user_timeline.json?screen_name="+s.username[0]+"&count="+count+(s.retweets ? "&include_rts=1" : "")+"&page="+s.page+common_params;
+     } // TODO: integrate support for searches
+    }
+
 
       function extract_avatar_url(item, secure) {
         if (secure) {
@@ -209,6 +219,7 @@
 
       $(widget).unbind("tweet:load").bind("tweet:load", function(){
         if (s.loading_text) $(widget).empty().append(loading);
+
         $.getJSON(build_api_url(), function(data) {
           if(data.message) {
             console.log(data.message);
@@ -232,6 +243,8 @@
             window.setTimeout(function() { $(widget).trigger("tweet:load"); }, 1000 * s.refresh_interval);
           }
 
+        }).error(function(){
+          console.log("Error parsing JSON");
         });
       }).trigger("tweet:load");
 });

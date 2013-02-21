@@ -10,10 +10,9 @@ blrfurther.com
 Basic OAuth and caching layer for Seaofclouds' tweet.js, designed
 to introduce compatibility with Twitter's v1.1 API.
 
-Version: 1.0
+Version: 1.2
 Created: 2013.02.20
 
-Utilizes:
 https://github.com/seaofclouds/tweet
 https://github.com/themattharris/tmhOAuth
 
@@ -29,71 +28,120 @@ class ezTweet {
 	private $consumer_secret = 'YOUR_CONSUMER_SECRET';
 
 	// Your Twitter App Access Token
-	private $user_token      = 'YOUR_APP_ACCESS_TOKEN';
+	private $user_token      = 'YOUR_ACCESS_TOKEN';
 
 	// Your Twitter App Access Token Secret
 	private $user_secret     = 'YOUR_ACCESS_TOKEN_SECRET';
 
+	// Path to tmhOAuth libraries
+	private $lib             = './lib/';
 
-	// Enable caching?
-	private $cache_enabled   = true;
-
-	// Cache interval (in minutes)
+	// Enable caching
+    private $cache_enabled   = true;
+    
+    // Cache interval (minutes)
 	private $cache_interval  = 15;
 
-	// Full path to cache directory (must be writable)
+	// Path to writable cache directory
 	private $cache_dir       = './';
 
-	// Enable debug messages in JS console? (only enabled for development)
+	// Enable debugging
 	private $debug           = false;
 
 	/**************************************************************************************/
 
-
-
-
-	private $message = '';
-
 	public function __construct() {
-		if(!$_GET['url'] || !$_GET['screen_name']) {
-			die("<h1>URL and Screen Name are required.</h1>");
+		// Initialize paths and etc.
+		$this->pathify($this->cache_dir);
+		$this->pathify($this->lib);
+		$this->message = '';
+
+		// Set server-side debug params
+		if($this->debug === true) {
+			error_reporting(-1);
+		} else {
+			error_reporting(0);
 		}
 	}
 
 	public function fetch() {
-		$response = $this->getJSON();
-		$JSON = json_encode(array('message' => ($this->debug) ? $this->message : false, 'response' => json_decode($response, true)));
-
-		echo $JSON;
+		echo json_encode(
+				array(
+					'response' => json_decode($this->getJSON(), true),
+					'message' => ($this->debug) ? $this->message : false
+				)
+			);
 	}
 
 	private function getJSON() {
  		if($this->cache_enabled === true) {
+
 			$CFID = $this->generateCFID();
 			$cache_file = $this->cache_dir.$CFID;
+
 			if(file_exists($cache_file) && (filemtime($cache_file) > (time() - 60 * intval($this->cache_interval)))) {
 				return file_get_contents($cache_file, FILE_USE_INCLUDE_PATH);
 			} else {
+
 				$JSONraw = $this->getTwitterJSON();
 				$JSON = $JSONraw['response'];
-				if(is_writable($this->cache_dir)) {
+
+				// Don't write a bad cache file if there was a CURL error
+				if($JSONraw['errno'] != 0) {
+					$this->consoleDebug($JSONraw['error']);
+					return $JSON;
+				}
+
+				// Error checking: I wrapped this in a redundant conditional for efficiency
+				if($this->debug === true) {
+					// Check for twitter-side errors
+					$pj = json_decode($JSON, true);
+					if(isset($pj['errors'])) {
+						foreach($pj['errors'] as $error) {
+							$message = 'Twitter Error: "'.$error['message'].'", Error Code #'.$error['code'];
+							$this->consoleDebug($message);
+						}
+						return false;
+					}
+				}
+
+				if(is_writable($this->cache_dir) && $JSONraw) {
 					if(file_put_contents($cache_file, $JSON, LOCK_EX) === false) {
-						$this->message .= "Error writing cache file\n";
+						$this->consoleDebug("Error writing cache file");
 					}
 				} else {
-					$this->message .= "Cache directory is not writable\n";
+					$this->consoleDebug("Cache directory is not writable");
 				}
 				return $JSON;
 			}
 		} else {
 			$JSONraw = $this->getTwitterJSON();
+
+			// Error checking: I wrapped this in a redundant conditional for efficiency
+			if($this->debug === true) {
+				// Check for CURL errors
+				if($JSONraw['errno'] != 0) {
+					$this->consoleDebug($JSONraw['error']);
+				}
+
+				// Check for twitter-side errors
+				$pj = json_decode($JSONraw['response'], true);
+				if(isset($pj['errors'])) {
+					foreach($pj['errors'] as $error) {
+						$message = 'Twitter Error: "'.$error['message'].'", Error Code #'.$error['code'];
+						$this->consoleDebug($message);
+					}
+					return false;
+				}
+			}
+
 			return $JSONraw['response'];
 		}
 	}
 
 	private function getTwitterJSON() {
-		require './tmhOAuth.php';
-		require './tmhUtilities.php';
+		require $this->lib.'tmhOAuth.php';
+		require $this->lib.'tmhUtilities.php';
 
 		$tmhOAuth = new tmhOAuth(array(
 		    'consumer_key'    		=> $this->consumer_key,
@@ -103,15 +151,26 @@ class ezTweet {
 			'curl_ssl_verifypeer'   => false
 		));
 
-		$tmhOAuth->request('GET', $tmhOAuth->url(urldecode($_GET['url'])), array('screen_name' => $_GET['screen_name'], 'count' => $_GET['count']));
-
+		$tmhOAuth->request('GET', $tmhOAuth->url(urldecode($_GET['url'])));
 		$response = $tmhOAuth->response;
+
 		return $response;
 	}
 
 	private function generateCFID() {
-		// The cached filename ID is comprised of the screen name + the md5 of the url.
-		return $_GET['screen_name'].'-'.md5($_GET['url']).'.json';
+		// The unique cached filename ID
+		return md5(serialize($_GET)).'.json';
+	}
+
+	private function pathify(&$path) {
+		// Ensures our user-specified paths are up to snuff
+		$path = realpath($path).'/';
+	}
+
+	private function consoleDebug($message) {
+		if($this->debug === true) {
+			$this->message .= 'tweet.js: '.$message."\n";
+		}
 	}
 }
 
