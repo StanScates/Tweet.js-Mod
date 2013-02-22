@@ -142,10 +142,10 @@ class ezTweet {
         require $this->lib.'tmhUtilities.php';
 
         $tmhOAuth = new tmhOAuth(array(
-            'consumer_key'    		=> $this->consumer_key,
-            'consumer_secret' 		=> $this->consumer_secret,
-            'user_token'      		=> $this->user_token,
-            'user_secret'     		=> $this->user_secret,
+            'consumer_key'          => $this->consumer_key,
+            'consumer_secret'       => $this->consumer_secret,
+            'user_token'            => $this->user_token,
+            'user_secret'           => $this->user_secret,
             'curl_ssl_verifypeer'   => false
         ));
 
