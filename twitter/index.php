@@ -10,7 +10,7 @@ blrfurther.com
 Basic OAuth and caching layer for Seaofclouds' tweet.js, designed
 to introduce compatibility with Twitter's v1.1 API.
 
-Version: 1.2
+Version: 1.3
 Created: 2013.02.20
 
 https://github.com/seaofclouds/tweet
@@ -18,7 +18,7 @@ https://github.com/themattharris/tmhOAuth
 
 */
 
-if(empty($_GET)) { die(); }
+if(empty($_POST)) { die(); }
 
 class ezTweet {
 	/*************************************** config ***************************************/
@@ -77,7 +77,6 @@ class ezTweet {
 
 	private function getJSON() {
  		if($this->cache_enabled === true) {
-
 			$CFID = $this->generateCFID();
 			$cache_file = $this->cache_dir.$CFID;
 
@@ -94,7 +93,6 @@ class ezTweet {
 					return $JSON;
 				}
 
-				// Error checking: I wrapped this in a redundant conditional for efficiency
 				if($this->debug === true) {
 					// Check for twitter-side errors
 					$pj = json_decode($JSON, true);
@@ -119,7 +117,6 @@ class ezTweet {
 		} else {
 			$JSONraw = $this->getTwitterJSON();
 
-			// Error checking: I wrapped this in a redundant conditional for efficiency
 			if($this->debug === true) {
 				// Check for CURL errors
 				if($JSONraw['errno'] != 0) {
@@ -136,7 +133,6 @@ class ezTweet {
 					return false;
 				}
 			}
-
 			return $JSONraw['response'];
 		}
 	}
@@ -149,14 +145,15 @@ class ezTweet {
 		    'consumer_key'    		=> $this->consumer_key,
 		    'consumer_secret' 		=> $this->consumer_secret,
 		    'user_token'      		=> $this->user_token,
-            'user_secret'     		=> $this->user_secret,
-            'curl_ssl_verifypeer'   => false
+		    'user_secret'     		=> $this->user_secret,
+			'curl_ssl_verifypeer'   => false
 		));
 
-		$tmhOAuth->request('GET', $tmhOAuth->url(urldecode($_GET['url'])));
-		$response = $tmhOAuth->response;
+		$url = $_POST['request']['url'];
+		$params = $_POST['request']['parameters'];
 
-		return $response;
+		$tmhOAuth->request('GET', $tmhOAuth->url($url), $params);
+		return $tmhOAuth->response;
 	}
 
 	private function generateCFID() {
