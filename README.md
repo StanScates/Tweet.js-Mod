@@ -1,4 +1,4 @@
-### v1.3
+### v1.3.1
 
 ## Why?
 [seaofclouds / tweet](https://github.com/seaofclouds/tweet) has always been one of my preferred methods of client-side twitter integration. With the advent of Twitter's 1.1 API and the deprecation of 1.0, client side timeline fetching and parsing is no longer feasable due to the authentication restrictions imposed by OAuth. This exists to serve as a layer in between, serving the JSON directly to Tweet.js and caching it in a flat .json file to compensate for the v1.1 API's access limitations on sites which require more than ~12 loads of a user's timeline per minute. 
