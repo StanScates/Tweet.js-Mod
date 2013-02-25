@@ -10,7 +10,7 @@ blrfurther.com
 Basic OAuth and caching layer for Seaofclouds' tweet.js, designed
 to introduce compatibility with Twitter's v1.1 API.
 
-Version: 1.3
+Version: 1.3.1
 Created: 2013.02.20
 
 https://github.com/seaofclouds/tweet

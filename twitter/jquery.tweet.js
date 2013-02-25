@@ -152,6 +152,7 @@
                 return {
                     url: "/1.1/lists/list.json",
                         parameters: {
+                            screen_name : s.username,
                             page : s.page,
                             count : count,
                             include_entities : 1
@@ -161,6 +162,7 @@
                 return {
                     url: "/1.1/favorites/list.json",
                         parameters: {
+                            screen_name : s.username,
                             page : s.page,
                             count : count,
                             include_entities : 1
@@ -170,6 +172,7 @@
                 return {
                     url: "/1.1/statuses/user_timeline.json",
                         parameters: {
+                            screen_name : s.username,
                             page : s.page,
                             count : count,
                             include_rts : (s.retweets ? 1 : 0),

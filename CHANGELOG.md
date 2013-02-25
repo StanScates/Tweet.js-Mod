@@ -1,3 +1,6 @@
+## v1.3.1 2013.02.24
+* Username API parameter hotfix
+
 ## v1.3 - 2013.02.22
 * Added CHANGELOG.md
 * Changed request method to POST
