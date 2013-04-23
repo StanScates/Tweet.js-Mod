@@ -1,3 +1,9 @@
+## v1.4 2013.04.22
+* Fixed bug affecting username arrays and the query functionality
+* Fixed occasional problems rendering in chrome due to ajax async
+* Fixed list functionality
+* Cleaned up some stuff
+
 ## v1.3.1 2013.02.24
 * Username API parameter hotfix
 
@@ -5,7 +11,7 @@
 * Added CHANGELOG.md
 * Changed request method to POST
 * Improved request functionality
-* Added compatibility with "query" parameter 
+* Added compatibility with "query" parameter
 * Added minified version of jquery.tweet.js
 
 ## v1.2 - 2013.02.21

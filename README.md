@@ -1,16 +1,16 @@
-### v1.3.1
+### v1.4
 
 ## Why?
-[seaofclouds / tweet](https://github.com/seaofclouds/tweet) has always been one of my preferred methods of client-side twitter integration. With the advent of Twitter's 1.1 API and the deprecation of 1.0, client side timeline fetching and parsing is no longer feasable due to the authentication restrictions imposed by OAuth. This exists to serve as a layer in between, serving the JSON directly to Tweet.js and caching it in a flat .json file to compensate for the v1.1 API's access limitations on sites which require more than ~12 loads of a user's timeline per minute. 
+[seaofclouds / tweet](https://github.com/seaofclouds/tweet) has always been one of my preferred methods of client-side twitter integration. With the advent of Twitter's 1.1 API and the deprecation of 1.0, client side timeline fetching and parsing is no longer feasable due to the authentication restrictions imposed by OAuth. This exists to serve as a layer in between, serving the JSON directly to Tweet.js and caching it in a flat .json file to compensate for the v1.1 API's access limitations on sites which require more than ~12 loads of a user's timeline per minute.
 
-This mod works as an intermediary between [seaofclouds / tweet](https://github.com/seaofclouds/tweet) and the twitter JSON api which it uses to fetch tweets. It handles the server-side authentication process and (optionally) caches the JSON file locally to avoid being throttled, which it then passes off to [seaofclouds / tweet](https://github.com/seaofclouds/tweet) as normal. Simple yet effective.   
+This mod works as an intermediary between [seaofclouds / tweet](https://github.com/seaofclouds/tweet) and the twitter JSON api which it uses to fetch tweets. It handles the server-side authentication process and (optionally) caches the JSON file locally to avoid being throttled, which it then passes off to [seaofclouds / tweet](https://github.com/seaofclouds/tweet) as normal. Simple yet effective.
 
 
 ## Features
 * Works with Twitter API v1.1.
 * Caches resources server-side in flat JSON files.
 * Easily configurable.
-* Supports all features of [seaofclouds / tweet](https://github.com/seaofclouds/tweet). 
+* Supports all features of [seaofclouds / tweet](https://github.com/seaofclouds/tweet).
 * Supports OAuth Token Authentication (via Twitter App)
 
 
@@ -42,7 +42,6 @@ $(document).ready(function() {
 
 
 ## Caveats
-* Does not currently support custom API URL's.
 * Does not spontaneously spawn kittens. [in progress]
 
 

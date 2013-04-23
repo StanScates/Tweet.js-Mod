@@ -89,6 +89,7 @@ class tmhOAuth {
     date_default_timezone_set($this->config['timezone']);
   }
 
+
   /**
    * Sets the useragent for PHP to use
    * If '$this->config['user_agent']' already has a value it is used instead of one
@@ -630,6 +631,7 @@ class tmhOAuth {
         }
         break;
     }
+
 
     // configure curl
     $c = curl_init();
