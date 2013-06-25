@@ -33,7 +33,7 @@
 			refresh_interval: null ,                  // [integer]  optional number of seconds after which to reload tweets
 			twitter_url: "twitter.com",               // [string]   custom twitter url, if any (apigee, etc.)
 			twitter_api_url: "api.twitter.com",       // [string]   custom twitter api url, if any (apigee, etc.)
-			twitter_search_url: "search.twitter.com", // [string]   custom twitter search url, if any (apigee, etc.)
+			twitter_search_url: "api.twitter.com", // [string]   custom twitter search url, if any (apigee, etc.)
 			template: "{avatar}{time}{join}{text}",   // [string or function] template used to construct each tweet <li> - see code for available vars
 			comparator: function(tweet1, tweet2) {    // [function] comparator used to sort tweets (see Array.sort)
 				return tweet2["tweet_time"] - tweet1["tweet_time"];
@@ -191,9 +191,9 @@
 				var query = (s.query || 'from:'+s.username.join(' OR from:'));
 				return {
 					host: s.twitter_search_url,
-					url: "/search.json",
+					url: "/1.1/search/tweets.json",
 					parameters: $.extend({}, defaults, {
-						page: s.page,
+						// page: s.page,
 						q: query,
 						rpp: count
 					})
